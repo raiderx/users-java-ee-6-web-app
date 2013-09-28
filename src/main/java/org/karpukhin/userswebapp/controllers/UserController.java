@@ -1,12 +1,12 @@
 package org.karpukhin.userswebapp.controllers;
 
-import org.karpukhin.userswebapp.beans.Search;
+import org.karpukhin.userswebapp.beans.UsersService;
 import org.karpukhin.userswebapp.entities.User;
 import org.karpukhin.userswebapp.controllers.util.JsfUtil;
 import org.karpukhin.userswebapp.controllers.util.PaginationHelper;
-import org.karpukhin.userswebapp.beans.UserFacade;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -18,7 +18,6 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
-import javax.inject.Inject;
 
 @ManagedBean(name = "userController")
 @SessionScoped
@@ -26,12 +25,14 @@ public class UserController implements Serializable {
 
     private User current;
     private DataModel items = null;
-    @EJB
-    private UserFacade userFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    @Inject
-    private Search search;
+
+    private DataModel searched = null;
+    private String searchText;
+
+    @EJB
+    private UsersService usersService;
 
     public UserController() {
     }
@@ -44,8 +45,8 @@ public class UserController implements Serializable {
         return current;
     }
 
-    private UserFacade getFacade() {
-        return userFacade;
+    private UsersService getFacade() {
+        return usersService;
     }
 
     public PaginationHelper getPagination() {
@@ -64,6 +65,37 @@ public class UserController implements Serializable {
             };
         }
         return pagination;
+    }
+
+    public String prepareSearch() {
+        searched = null;
+        return "search";
+    }
+
+    public DataModel getSearched() {
+        if (searched == null) {
+            searched = new ListDataModel();
+        }
+        return searched;
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
+    }
+
+    public String getSearchText() {
+        if (searchText == null) {
+            searchText = "";
+        }
+        return searchText;
+    }
+
+    public String search() {
+        if (searchText != null && !"".equals(searchText)) {
+            List<User> users = usersService.search(searchText);
+            searched = new ListDataModel(users);
+        }
+        return "search";
     }
 
     public String prepareList() {
@@ -102,7 +134,7 @@ public class UserController implements Serializable {
 
     public String update() {
         try {
-            getFacade().edit(current);
+            getFacade().update(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/messages").getString("UserUpdated"));
             return "view";
         } catch (Exception e) {
@@ -185,11 +217,11 @@ public class UserController implements Serializable {
     }
 
     public SelectItem[] getItemsAvailableSelectMany() {
-        return JsfUtil.getSelectItems(userFacade.findAll(), false);
+        return JsfUtil.getSelectItems(usersService.findAll(), false);
     }
 
     public SelectItem[] getItemsAvailableSelectOne() {
-        return JsfUtil.getSelectItems(userFacade.findAll(), true);
+        return JsfUtil.getSelectItems(usersService.findAll(), true);
     }
 
     @FacesConverter(forClass = User.class)
@@ -201,7 +233,7 @@ public class UserController implements Serializable {
             }
             UserController controller = (UserController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "userController");
-            return controller.userFacade.find(getKey(value));
+            return controller.usersService.find(getKey(value));
         }
 
         java.lang.Long getKey(String value) {

@@ -19,23 +19,19 @@
                 <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
             </h:panelGroup>
 
-            <h:commandLink action="#{userController.prepareCreate}" value="#{bundle.ListUserCreateLink}"/>
-            <br/>
-            <br/>
+            <h:panelGroup layout="block">
+                <h:inputText id="searchText" value="#{userController.searchText}" title="#{bundle.CreateUserTitle_firstName}" />
+                <h:commandLink action="#{userController.search}"
+                               value="Search"/>
+            </h:panelGroup>
 
-            <h:outputText escape="false" value="#{bundle.ListUserEmpty}"
-                          rendered="#{userController.items.rowCount == 0}"/>
+            <h:panelGroup layout="block" rendered="#{userController.searched.rowCount == 0}">
+                <h:outputText escape="false" value="#{bundle.ListUserEmpty}"/>
+            </h:panelGroup>
 
-            <h:panelGroup rendered="#{userController.items.rowCount > 0}">
-                <h:outputText
-                        value="#{userController.pagination.pageFirstItem + 1}..#{userController.pagination.pageLastItem + 1}/#{userController.pagination.itemsCount}"/>&nbsp;
-                <h:commandLink action="#{userController.previous}"
-                               value="#{bundle.Previous} #{userController.pagination.pageSize}"
-                               rendered="#{userController.pagination.hasPreviousPage}"/>&nbsp;
-                <h:commandLink action="#{userController.next}"
-                               value="#{bundle.Next} #{userController.pagination.pageSize}"
-                               rendered="#{userController.pagination.hasNextPage}"/>&nbsp;
-                <h:dataTable value="#{userController.items}" var="item" border="0" cellpadding="2" cellspacing="0"
+            <h:panelGroup rendered="#{userController.searched.rowCount > 0}">
+
+                <h:dataTable value="#{userController.searched}" var="item" border="0" cellpadding="2" cellspacing="0"
                              rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
                     <h:column>
                         <f:facet name="header">
@@ -63,9 +59,6 @@
             </h:panelGroup>
             <br/>
             <h:commandLink value="#{bundle.ListUserIndexLink}" action="/index" immediate="true"/>
-            <br/>
-            <br/>
-            <h:commandLink action="#{userController.prepareSearch}" value="Search" immediate="true"/>
         </h:form>
     </ui:define>
 </ui:composition>

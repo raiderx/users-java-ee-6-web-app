@@ -1,27 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.karpukhin.userswebapp.beans;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.karpukhin.userswebapp.entities.User;
 
 /**
- *
- * @author karpukhin-pavel
+ * @author Pavel Karpukhin
+ * @since 24.09.13
  */
-@Stateless
+@Named
+@Singleton
 public class UserFacade extends AbstractFacade<User> {
 
     @PersistenceContext(unitName = "maven-web-app")
     private EntityManager em;
-
-    @Inject
-    private Search search;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -31,5 +25,4 @@ public class UserFacade extends AbstractFacade<User> {
     public UserFacade() {
         super(User.class);
     }
-
 }
