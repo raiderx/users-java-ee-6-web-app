@@ -1,6 +1,40 @@
 Java EE 6 Web Application
 =========================
 
+The application represents user list with ability to:
+
+- view list of existing users,
+
+- create new user,
+
+- view existing user,
+
+- edit existing user,
+
+- remove existing user,
+
+- find existing user by his name.
+
+The application was developed using:
+
+- Apache Lucene 4.4.0
+
+- Apache Maven 3.1.0
+
+- GlassFish 3.1.1.2 (Java EE Web Profile)
+
+- IntelliJ IDEA 11.1.5
+
+- PostgreSQL 9.1
+
+- Ubuntu 12.04
+
+Requirements:
+
+1) GlassFish 3.1 (JPA 2.0, JSF 2.1)
+
+2) PostgreSQL 9.1
+
 Create database user:
 
 $ createuser -U postgres -D -P -R -S search_users
@@ -31,15 +65,15 @@ $ mvn package
 
 Deploy application:
 
-$ /local/opt/glassfish3/bin/asadmin deploy target/users-web-app.war
+$ /opt/glassfish3/bin/asadmin deploy target/users-web-app.war
 
 List application in domain:
 
-$ /local/opt/glassfish3/bin/asadmin list-applications
+$ /opt/glassfish3/bin/asadmin list-applications
 
 Open in browser:
 
-http://localhost:8080/users-web-app
+http://localhost:8080/users-web-app/
 
 Check that data is in database:
 
@@ -47,7 +81,7 @@ $ psql -c "select * from users;" -U search_users search_users
 
 Undeploy application:
 
-$ /local/opt/glassfish3/bin/asadmin undeploy users-web-app
+$ /opt/glassfish3/bin/asadmin undeploy users-web-app
 
 Stop domain:
 
