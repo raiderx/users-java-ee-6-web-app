@@ -1,6 +1,8 @@
 Java EE 6 Web Application
 =========================
 
+This project is my first attempt to develop an application for Java EE 6.
+
 The application represents user list with ability to:
 
 - view list of existing users,
