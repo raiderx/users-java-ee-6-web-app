@@ -54,6 +54,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public void remove(User user) {
         userFacade.remove(user);
+        search.deleteUser(user);
     }
 
     @Override

@@ -72,6 +72,16 @@ public class Search {
         }
     }
 
+    public void deleteUser(User user) {
+        try {
+            indexWriter.deleteDocuments(new Term("user_id", user.getId().toString()));
+            indexWriter.commit();
+            searcherManager.maybeRefresh();
+        } catch (IOException e) {
+            throw new RuntimeException("Something wrong occurred", e);
+        }
+    }
+
     public List<User> searchUsers(String text) {
         List<User> result = new ArrayList<User>();
         IndexSearcher is = null;
